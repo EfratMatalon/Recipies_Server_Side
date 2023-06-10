@@ -1,0 +1,45 @@
+<div class="container mt-3">
+    <h2>הרכיבים באתר</h2>
+    <p>The .table-striped class adds zebra-stripes to a table:</p> 
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" id="strToSearch" placeholder="הזן את שם הרכיב אותו תרצה לראות" name="strToSearch"
+      [(ngModel)]="strToSearch">
+      <label for="strToSearch">חיפוש</label>
+    </div>         
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>קוד רכיב</th>
+          <th>שם רכיב</th>
+          <th>סיווג</th>
+          <th>טבעוני</th>
+          <th>צמחוני</th>
+          <th>נטול בוטנים</th>
+          <th>נטול אגוזים</th>
+          <th>נטול לקטוז</th>
+          <th>נטול גלוטן</th>
+          <th>קלוריות ל-100 ג'</th>
+          <th>ערכים תזונתיים</th>
+          <th>פרטים נוספים</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ing of ingSer.ingredients!|search:strToSearch">
+          <td>{{ing.ingridientID}}</td>
+          <td>{{ing.name}}</td>
+          <td>{{ing.isDairy? "חלבי" : ing.isMeaty? "בשרי" : "פרווה"}}</td>
+          <td>{{ing.isVegan? "✅": "❌"}}</td>
+          <td>{{ing.isVegan? "✅": "❌"}}</td>
+          <td>{{ing.isGlutenFree? "✅": "❌"}}</td>
+          <td>{{ing.isNutFree? "✅": "❌"}}</td>
+          <td>{{ing.isNutFree? "✅": "❌"}}</td>
+          <td>{{!ing.isDairy? "✅": "❌"}}</td>
+          <td>{{ing.calloriesPer100g}}</td>
+          <td><button class="btn">ערכים תזונתיים</button></td>
+          <td><button class="btn btn-secondary">פרטים נוספים</button></td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  

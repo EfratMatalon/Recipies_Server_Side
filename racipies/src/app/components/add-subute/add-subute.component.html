@@ -1,0 +1,50 @@
+<div class="modal-header bg-primary text-white">
+    <h5 class="modal-title" id="exampleModalLabel">הוספת תחליף {{title}}</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modalRef.close('close click')"></button>
+</div>
+<div class="modal-body bg-primary text-white ">
+    <div class="mt-4 p-5 bg-primary text-white " dir="rtl">
+        <!-- rounded -->
+        <form>
+            <div class="row">
+                <div class="col-sm-2">
+                    <input type="number" class="form-control form-control-lg " id="quantity" [(ngModel)]='ingridientQ'
+                        name="quantity" [ngModelOptions]="{standalone: true}" min="0" value="1" placeholder="כמות">
+                </div>
+
+                <div class="col-sm-2">
+                    <select class="form-control form-control-lg" id="Mname" name="Mname" [ngModelOptions]="{standalone: true}"
+                        [(ngModel)]='measure' placeholder="אמצעי מדידה">
+                        <option *ngFor="let i of measures" [ngValue]="i" key="i.measureID" id="i.measureID">{{i.measureName}}</option>
+                    </select>
+                </div>
+
+                <div class="col">
+                    <select class="form-control form-control-lg" id="iname" name="iname" [ngModelOptions]="{standalone: true}"
+                        [(ngModel)]='ingridient' placeholder="שם הרכיב">
+                        <option *ngFor="let i of ingredients" [ngValue]="i" key="i.ingridientID" id="i.ingridientID">{{i.name}}</option>
+                        <option key="no" id="no">רכיב אחר - נא פרט בהערה</option>
+                    </select>
+                </div>
+
+                <div class="col-sm-2">
+                    <input type="text" class="form-control form-control-lg " id="note" [(ngModel)]='ingridientNote'
+                        [ngModelOptions]="{standalone: true}" placeholder="הערה" name="note">
+                </div>
+
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-primary btn-lg" (click)="close('save click')">הוסף רכיב</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+<div class="modal-footer bg-primary text-white">
+    <button type="button" class="btn btn-secondary" (click)="modalRef.close('close click')">
+        ביטול
+    </button>
+    <!-- // אם רוצים לקבל מידע בסגירה - משתמשים בפונקציה שיצרנו - ולא בדיפולטיבית -->
+    <!--  אם נעדיף לעשות את כפתור ההוספה למטה -->
+    <!-- <button type="button" class="btn btn-primary" (click)="close('save click')">הוסף תחליף</button> -->
+</div>

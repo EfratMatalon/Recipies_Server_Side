@@ -1,0 +1,223 @@
+<div class="container mt-3" dir="rtl">
+    <h2>הוסף מתכון</h2>
+    <p></p>
+
+    <!-- -----------------------פרטי מתכון -------------------------------------------- -->
+    <form (ngSubmit)="save()" (valueChanges)="saveToTemporaryStorage()" dir="rtl" #TheForm="ngForm">
+
+        <div class="form mt-3 mb-3">
+            <label for="fName">שם המתכון:</label>
+            <input type="text" class="form-control form-control-lg" id="fName" name="fName" placeholder="הזן שם למתכון"
+                [(ngModel)]="formData.name" #RecipyName='ngModel' required minlength="2" maxlength="300">
+            <!-- pattern="/[^ ]+/g" -->
+
+
+            <span *ngIf='RecipyName.invalid && (RecipyName.touched || RecipyName.dirty)'>
+                <p class="alert-danger" for="RecipyName" *ngIf="RecipyName.errors!['required']">שם הוא שדה חובה</p>
+                <p class="alert-danger" for="RecipyName" [hidden]="!RecipyName.errors!['minlength']">שם מכיל לפחות 2
+                    אותיות
+                </p>
+                <p class="alert-danger" for="RecipyName" [hidden]="!RecipyName.errors!['maxlength']">שם אינו יכול להכיל
+                    יותר
+                    מ-50
+                    אותיות </p>
+                <p class="alert-danger" for="RecipyName" [hidden]="!RecipyName.errors!['pattern']">שם מכיל לפחות 2
+                    אותיות
+                </p>
+            </span>
+        </div>
+
+        <div class="form mt-3 mb-3">
+            <label for="description">תאור:</label>
+            <input type="text" class="form-control form-control-lg" id="description" [(ngModel)]="formData.description"
+                placeholder="תאר את המתכון כרצונך " name="description">
+        </div>
+
+        <div class="form mb-3 mt-3">
+            <label for="pic" class="form-label">תמונה:</label>
+            <br>
+            <img src="http://localhost:58285/images/{{formData.image}}" class="w3-border w3-padding" style="width:50%">
+            <input type="file" accept="image/*" name="pic" id="file-input" class="form-control form-control-lg img-thumbnail"
+                #Image (change)="handleFileInput($event.target)" placeholder="העלה תמונה של המתכון" />
+        </div>
+
+        //אם נרצה אפשר לעשות קודם קטגוריות ראשיות, ורק אז תיפתח בחירה לתת קטגוריה
+        //אפשר גם לאפשר בחירות מרובות - אם מתאים לכמה קטגוריות - אבל זה כבר ידרוש טבלה נוספת //במסד
+        <div class="form mb-3 mt-3">
+            <label for="categoty" class="form-label">קטגוריה:</label>
+            <select class="form-control form-control-lg" id="categoty" name="categoty" [(ngModel)]='formData.category'
+                placeholder="קטגוריה:">
+
+                <option *ngFor="let i of categoriesSer.subCategories!" [ngValue]="i" key="i.categoryID" id="i.categoryID">{{i.categoryName}}</option>
+            </select>
+        </div>
+
+        <div class="form mb-3 mt-3">
+            <label for="time" class="form-label">משך זמן ההכנה:</label>
+            <input type="time" class="form-control form-control-lg" id="time" name="time" [(ngModel)]="formData.time">
+        </div>
+
+        <div class="form mb-3 mt-3">
+            <label for="numOfportions" class="form-label">מספר מנות:</label>
+            <input type="number" class="form-control form-control-lg" id="numOfportions" name="numOfportions"
+                #NumOfportions="ngModel" min="1" [(ngModel)]="formData.numOfportions">
+            <span *ngIf='NumOfportions.invalid && (NumOfportions.touched || NumOfportions.dirty)'>
+                <p class="alert-danger" for="pwdV" *ngIf="NumOfportions.errors!['min']">
+                    צריכה לצאת לפחות מנה אחת ממתכון </p>
+            </span>
+        </div>
+
+        <div class="form mt-3 mb-3">
+            <label for="poritionDesc">תאור המנה:</label>
+            <input type="text" class="form-control form-control-lg" id="poritionDesc" [(ngModel)]="formData.poritionDesc"
+                name="poritionDesc" placeholder="תאר את סוג המנה - לדוגמא: תבניות עוגה, עוגות אישיות, כוסיות קטנות וכדומה ">
+        </div>
+
+        <div class="form mb-3 mt-3">
+                <label for="level" class="form-label">רמת קושי:</label>
+                <select class="form-control form-control-lg" id="level" name="level" [(ngModel)]="formData.level"
+                #level='ngModel'
+                    placeholder="רמת קושי">
+                    <ng-container *ngFor="let lev of ['מאד קל', 'קל', 'מאתגר', 'קשה']; let i = index">
+                    <option [ngValue]="i+1" key="i" id="i">{{lev}}</option>
+                </ng-container>
+            </select>          
+            <span *ngIf='level.invalid || (!level.touched)'>
+                <p class="alert-warrning" for="level">רמת הקושי תיקבע לברירת המחדל - קלה </p>
+            </span>
+        </div>
+
+        <div class="form mt-3 mb-3">
+            <!-- ------------------- הצגת רכיבי המתכון שנתווספו ------------------------------------- -->
+            <div class="row">
+                <div class="col">
+                    <label for="ing">רכיבי המתכון:</label>
+                    <table id="ing" class="table">
+                        <tr *ngFor="let i of formData.ingFr!; let ix = index">
+                            <th>{{i.quantity}} </th>
+                            <th>{{ i.quantity! >= 2? i.measurePlural : i.measure }} </th>
+                            <th>{{i.ingredientName}}</th>
+                            <th style="font-style: italic;">{{i.note}}</th>
+                            <th>
+                                <button type="button" class="btn btn-outline-primary btn-primary btn-sm" style="margin: 1%;"
+                                    (click)='
+                                    (i)'>ערוך</button></th>
+                            <th> <button type="button" class="btn btn-outline-primary btn-primary btn-sm" style="margin: 1%;"
+                                    (click)='formData.ingFr!.splice(formData.ingFr!.indexOf(i),1)'>הסר רכיב</button>
+                            </th>
+                            <th> <button type="button" class="btn btn-outline-primary btn-primary btn-sm" style="margin: 1%;"
+                                    (click)='i.isSubsShow = !i.isSubsShow;'>
+                                    {{i.isSubsShow? "הסתר" : "הצג"}} תחליפים</button>
+                            </th>
+                            <th>
+                                <button type="button" class="btn btn-outline-primary btn-primary btn-sm dropdown-toggle"
+                                    data-bs-toggle="dropdown" style="margin-top: 1%;"> הוסף תחליף </button>
+                                <ul class="dropdown-menu" style="flood-opacity: 30%; background-color: white;">
+                                    <!-- = רשימת התחליפים האפשריים == -->
+                                    <ng-container *ngFor="let subDesc of subsTypes" >
+                                    <li>
+                                        <a class="dropdown-item" 
+                                        (click)="openModal(subDesc, i)">{{subDesc}}</a>
+                                    </li>
+                                    </ng-container>
+                                </ul>
+                            </th>
+                            <!-- =========  הצגת התחליפים לרכיב זה ========= -->
+                            <th *ngIf='i.isSubsShow'>
+                                <table class="table">
+                                    <ng-container *ngFor='let sub of substitute'>
+                                        <tr *ngIf='getAny(i)[sub!.key + "IngridientID"] > 0'>
+                                            <td>
+                                                <!-- == סוג התחליף == -->
+                                                <b style="text-shadow: 2px 2px 5px rgb(0, 38, 255); font:bolder; font-family:inherit;">{{sub.val}}:</b><ng-container 
+                                                *ngFor='let filed of fileds'>{{getAny(i)[sub!.key+filed]}}
+                                                </ng-container>
+                                                <!-- ==== כפתור להסרת התחליף === -->
+                                                <button type="menu" class='btn btn-link btn-sm' (click)="removeSub(ix,sub.key)">הסר</button>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                </table>
+                            </th>
+
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ------------------- הוספת רכיב למתכון ------------------------------------- -->
+            <div class="row">
+                <!-- [ngModelOptions]="{standalone: true} -- הגדרה המאפשרת להשתמש ב- ngModel - כלומר טופס רגיל בתוך טופס דינאמי-->
+                <div class="col-sm-2">
+                    <input type="number" class="form-control form-control-lg " id="quantity" [(ngModel)]='ingridientQ'
+                        name="quantity" step='0.25' min="0" value="1" placeholder="כמות" required>
+                </div>
+
+                <div class="col-sm-2">
+                    <select class="form-control form-control-lg" id="Mname" name="Mname" [(ngModel)]='measure'>
+                        <option>אמצעי מדידה</option> <!-- :כותרת -->
+                        <option *ngFor="let i of measuresSer.measures!" [ngValue]="i" key="i.measureID" id="i.measureID">{{ingridientQ!
+                            > 1? i.pluralForm : i.measureName}}</option>
+                    </select>
+                </div>
+
+                <div class="col">
+                    <div class="dropdown">
+                        <input type="text" class="form-control form-control-lg dropdown-toggle dropdown-menu-end"
+                            placeholder="שם הרכיב" data-bs-toggle="dropdown" [(ngModel)]='selectedIngridientName' name="selectedIng" #newIngToAdd='ngModel'>
+
+                        <datalist id="ings" class="dropdown-menu" style="height: auto; max-height:300px; overflow-y:scroll;">
+
+                            <option class="dropdown-item" key="no" id="no" (click)="openModalAddIng()">
+                                הוספת רכיב שאינו קיים</option>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            <option *ngFor="let i of iSer.ingredients! | orderBy:'name' |search: selectedIngridientName"
+                                class="dropdown-item" [ngValue]="i" key="i.ingridientID" id="i.ingridientID" (click)="onSelectIng(i)">{{i.name}}</option>
+                            <!-- TODO להתאים את גודל הרשימה לאינפוט -->
+                        </datalist>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <input type="text" class="form-control form-control-lg " id="note" [(ngModel)]='ingridientNote'
+                        [ngModelOptions]="{standalone: true}" placeholder="הערה" name="note">
+                </div>
+
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-primary btn-lg" (click)='addIng()'>{{isEdit? "אשר" : "הוסף רכיב"}}</button>
+                </div>
+            </div>
+        </div>
+        <!--  ---------------------- הוראות ----------------------------- -->
+        <div class="form mt-3 mb-3">
+            <label for="instractions">אופן ההכנה:</label>
+            <textarea class="form-control form-control-lg" id="instractions" [(ngModel)]="formData.instractions"
+                placeholder="הכנס הוראות ברורות להכנת המתכון" name="instractions" #instractions='ngModel' required
+                minlength='4'></textarea>
+            <span *ngIf='instractions.invalid && instractions.touched'>
+                <p class="alert-danger" for="instractions" *ngIf="instractions.errors!['required']">הוראות הוא שדה חובה</p>
+                <p class="alert-danger" for="instractions" [hidden]="!RecipyName.errors!['minlength']">הוראות מורכבות
+                    ממשפט אחד לפחות.
+                </p>
+            </span>
+        </div>
+
+        <!--  ---------------------- הערות למתכון ----------------------------- -->
+        <div class="form mt-3 mb-3">
+            <label for="recipyNotes">הערות למתכון:</label>
+            <textarea class="form-control form-control-lg" id="recipyNotes" [(ngModel)]="formData.recipyNotes"
+                placeholder="במקרה שישנן, הכנס הערות הנוגעות למתכון בכללותו" name="recipyNotes"></textarea>
+        </div>
+        <!-- <div class="form-check mb-3">
+            <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="remember">אם יש משהו שצריך לאשר
+            </label>
+        </div> -->
+        <button type="reset" class="btn btn-primary" (click)="resetAll()">נקה</button>
+        <button type="submit" class="btn btn-primary m-4" [disabled]="!TheForm.valid">פרסם</button>
+
+    </form>
+</div>

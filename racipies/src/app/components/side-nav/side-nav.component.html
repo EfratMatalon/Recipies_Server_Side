@@ -1,0 +1,111 @@
+<!-- <div class="container mt-3" style="display: block">
+  <h2>Vertical Nav</h2> -->
+
+<!-- צריך אוד לעבוד על זה, כדי להפוך אותו לרספונסיבי יותר -->
+<div class="container row">
+  <div class="col-md-3 col-sm-12">
+
+    <div class="container mt-3 d">
+      <div style="text-align: right;"><strong>הקטגוריות:</strong></div>
+      <div id="accordion" style="position: sticky;">
+        <div>
+          <!-- card-header -->
+          <a style="text-decoration:none; color: black; cursor: pointer;" routerLink="/recipies/-1" >
+            לכל המתכונים
+          </a>
+        </div>
+        <!-- == רשימת הקטגוריות הראשיות == -->
+        <ng-container *ngFor="let c of mCatSer.mainCategories">
+          <!-- card -->
+          <div class="">
+            <!-- card-header -->
+            <a style="text-decoration:none; color: black; cursor: pointer;" data-bs-toggle="collapse" href="#collapse{{c.MainCategoryID}}">
+              {{c.MainCategoryName}}
+            </a>
+          </div>
+          <!-- show - קלאס לכרטיסיה שרוצים שיהיה פתוח מראש -->
+          <div id="collapse{{c.MainCategoryID}}" class="collapse" data-bs-parent="#accordion">
+            <div class="">
+              <!-- card-body -->
+              <ul class="nav flex-column" dir="rtl">
+                <!-- == רשימת תתי הקטגוריות == -->
+                <li ir="rtl" class="nav-item" *ngFor="let s of sCatSer.subCategories! | filter: 'MainCategoryID' :c.MainCategoryID! ">
+                  <a class="nav-link" style="color: black;cursor: pointer;" routerLink="/recipies/{{s.categoryID}}">{{s.categoryName}}</a>
+                </li>               
+              </ul>
+            </div>
+          </div>
+        </ng-container>
+
+         <!-- כותרת-  מותאם לרגישים -->
+         <div class="">
+          <!-- card-header -->
+          <a style="text-decoration:none; color: black;cursor: pointer;" data-bs-toggle="collapse" href="#collapseSpecial">
+            מותאם לאוכלוסיות רגישות
+          </a>
+        </div>
+        <div id="collapseSpecial" class="collapse" data-bs-parent="#accordion">
+          <div class="">
+            <!-- card-body -->
+            <ul class="nav flex-column" dir="rtl">
+               <!--  == קטגוריות תחליפים == -->                
+               <ng-container *ngFor='let sub of substitute'>
+                <li ir="rtl" class="nav-item" >
+                <a class="nav-link" style="color: black;cursor: pointer;" routerLink="/recipies/{{sub.key}}">{{sub.val}}
+                  <!-- /אפשרי {{sub.val}} -->
+                </a>
+              </li>
+            </ng-container>              
+            </ul>
+          </div>
+        </div>
+
+         <!-- כותרת-  מותאם לרגישים -->
+         <div class="">
+          <!-- card-header -->
+          <a style="text-decoration:none; color: black;cursor: pointer;" data-bs-toggle="collapse" href="#collapseKosher">
+            כשרות
+          </a>
+        </div>
+        <div id="collapseKosher" class="collapse" data-bs-parent="#accordion">
+          <div class="">
+            <!-- card-body -->
+            <ul class="nav flex-column" dir="rtl">
+               <!--  == קטגוריות הכשרות == -->                
+               <ng-container *ngFor='let k of kosher'>
+                <li ir="rtl" class="nav-item" >
+                <a class="nav-link" style="color: black;cursor: pointer;" routerLink="/recipies/{{k.key}}">{{k.val}}
+                  <!-- /אפשרי {{sub.val}} -->
+                </a>
+              </li>
+            </ng-container>              
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <br>
+
+<div id="side-nav-news">
+    <!-- חדשים/מומלצים/קשורים -->
+    <h4>חם מהתנור -<br>
+      החדשים ביותר</h4>
+    <!--או-      המתכונים שאהבנו - הכי מומלצים -->
+    <div *ngFor="let c of resSer!.recipiesList |orderBy:'recipyID':true |slice:0:3" style="cursor: pointer">
+      <img src="http://localhost:58285/images/{{c!.image! |replace:'[.]' : '_min.'}}" alt="{{c.image}}" class="w3-hover-opacity"
+        style="width:150px; cursor: inherit;" (click)="fullResipy(c.recipyID)">
+      <p style="width:150px"><b style="cursor: pointer" (click)="fullResipy(c.recipyID)">{{c.name}} </b>
+        <span>{{c.description!|substr:0:110:"..."}}</span>
+        <br>
+    </div>
+  </div>
+
+  </div>
+  
+  <div class="col">
+    <router-outlet></router-outlet>
+
+  </div>
+</div>
+<!-- </div> -->

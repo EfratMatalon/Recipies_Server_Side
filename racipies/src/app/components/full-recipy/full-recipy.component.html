@@ -1,0 +1,522 @@
+<div class="container" class="printMe">
+
+    <div class="container text-center" dir="rtl">
+        <div class="mt-4 p-5 rounded" style="font-size: 150;" dir="rtl">
+            <!--  bg-light -->
+            <h2>{{currentRecipy!.name!}}</h2>
+            <h5>{{currentRecipy!.writerName}} </h5>
+            <h3>
+                <span class="badge bg-warning" style="margin-left: 10px;">
+                    🍽 {{currentRecipy!.numOfportions}} {{currentRecipy!.portionDescription}}
+                </span>
+                <span class="badge bg-info" style="margin-left: 10px;">⏱ {{currentRecipy!.time}} </span>
+                <span class="badge bg-success">{{currentRecipy!.dificultLevel! == 1? "🥄 קל מאד":
+                    currentRecipy!.dificultLevel! == 2? "🍴 קל":
+                    currentRecipy!.dificultLevel! == 3? "🍽 מאתגר":
+                    currentRecipy!.dificultLevel! == 4? "👨‍🍳 קשה": ""}} </span>
+
+                <span id="kosher" class="badge" style="background-color:none; margin-right: 10px;">
+                    {{currentRecipy!.isMeaty? "בשרי" : currentRecipy!.isDairy? "חלבי": "פרווה"}}</span>
+            </h3>
+
+            <!-- סרגל הבריאות -->
+            <!-- <div class="rounded-pill shadow p-4 mb-4 bg-white" style="width:auto">
+                🥜 🍞 🌿 🍳
+            </div> -->
+
+            <div style="height: 40%;background:none;">
+                <img src="http://localhost:58285/images/{{currentRecipy!.image!}}" alt="{{currentRecipy!.name}}" style="width:60%">
+                <!-- .jpg -->
+            </div>
+            <!-- <p>Some text..</p> -->
+            <p style="overflow-wrap: break-word;">{{currentRecipy!.description}}</p>
+        </div>
+        <div class="row">
+
+            <!-- המרה לאמצעי מדידה אחר -->
+            <div class="col notPrintMe notPrintMe">
+                {{currentRecipy!.numOfLikes! > 0 ? "👨‍👩‍👧‍👦👨‍👩‍👧‍👦 " + currentRecipy!.numOfLikes + " אהבו את
+                המתכון": "מחכים למשוב ממך על המתכון"}}
+                <!-- אם אי פעם נרצה לאפשר שינוי של כל אמצעי המדידה בבת אחת -->
+                <!-- <select class="form-control form-control-lg" id="Mname" name="Mname">
+                    //צריך שהאופציה הזו תהיה בחורה מראש - לבדוק למה זה לא עובד
+                    <option [(ngModel)]='measure' placeholder="אמצעי מדידה" onselect="convertMeasure()" key="orginal" id="orginal">אמצעי המדידה
+                        המקוריים</option>
+                    <option *ngFor="let i of measures" onselect="convertMeasure()" ngValue="i" key="i.measureID" id="i.measureID">{{i.measureName}}</option>
+
+                </select>
+ -->
+            </div>
+
+            <!-- //צריך להיות פה שינוי כמות המנות -->
+            <div class="col" style="width: 100%">
+                מס {{currentRecipy!.portionDescription}}:
+                <button class="w3-button w3-circle w3-teal notPrintMe" (click)="incCurrenNumOfportions()" [disabled]="currenNumOfportions == 525">+</button>
+                {{currenNumOfportions == 0.25? "רבע" : currenNumOfportions}}
+                <button class="w3-button w3-circle w3-teal notPrintMe" (click)="decCurrenNumOfportions()" [disabled]="currenNumOfportions == 0.25">-</button></div>
+
+
+            <!-- <div class="col-sm-2">//צריך להציג את בפתורי התחליפים</div> -->
+
+            <!-- אפשרות הדפסה, הורדה PDF וכו -->
+            <div class="col-sm-2 notPrintMe">
+                <button class="btn btn-secondary" (click)="printThisPage()">הדפסה 🖨</button>
+            </div>
+
+            <div class="col-sm-2 notPrintMe">
+                <app-like-and-fev [recipyId]='currentRecipy!.recipyID!' (like)="like()"></app-like-and-fev>
+            </div>
+        </div>
+    </div>
+    <!-- <iframe loading="eager" id="toPrintHoYea" name="toPrintHoYea" style="display: block
+        "></iframe> -->
+    <!-- ==================המתכון עצמו ================== -->
+    <br>
+    <!--החלוקה לכרטסיות לפי אם יש תחליפים -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#orginalRecipy">המתכון המקורי</a>
+        </li>
+        <li class="nav-item" *ngIf="currentRecipy!.makeItHealthy">
+            <a class="nav-link" data-bs-toggle="tab" href="#makeItHealthy">בריא יותר</a>
+        </li>
+        <li class="nav-item" *ngIf="currentRecipy!.makeItVegan">
+            <a class="nav-link" data-bs-toggle="tab" href="#makeItVegan">טבעוני</a>
+        </li>
+        <li class="nav-item" *ngIf="currentRecipy!.makeItGlutenFree">
+            <a class="nav-link" data-bs-toggle="tab" href="#makeItGlutenFree">נטול גלוטן</a>
+        </li>
+        <li class="nav-item" *ngIf="currentRecipy!.MakeItParve">
+            <a class="nav-link" data-bs-toggle="tab" href="#makeItParve">פרווה</a>
+        </li>
+        <li class="nav-item" *ngIf="currentRecipy!.makeItNutFree">
+            <a class="nav-link" data-bs-toggle="tab" href="#makeItNutFree">נטול בוטנים</a>
+        </li>
+    </ul>
+
+
+    <!-- Tab panes תוכן הכרטיסיות -->
+    <div>
+        <div class="tab-content">
+
+            <!-- =============== כרטיסיית הרכיבים המקוריים ==========================  -->
+            <div id="orginalRecipy" class="container tab-pane active"><br>
+                <div dir="rtl" class="container mt-3">
+                    <h2>הרכיבים:</h2>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr *ngFor="let i of ingredients!">
+
+                                <td>
+                                    {{i!.quantity | number}}
+                                    <!-- <span>{{i!.quantity | number}}</span> -->
+                                    <span class="dropdown">
+                                        <span (click)="GetMeasuresOfIng(i!.ingridientID!, i.meashureID!)" class="dropdown-toggle"
+                                            data-bs-toggle="dropdown">
+                                            <span class="printMe_m"> {{i!.quantity! > 1? i!.measurePlural!:
+                                                i!.measure}}</span>
+                                        </span>
+                                        <ul class="dropdown-menu">
+                                            <li><span class="dropdown-header">אמצעי המדידה בהם ניתן למדוד רכיב זה</span></li>
+                                            <li *ngIf="ingSer.ingredients!         [ingIndexForMesures!].measuresForIngredientList === undefined"><span
+                                                    class="dropdown-item-text alert">כרגע לא קיימים נתונים על אמצעי
+                                                    המדידה</span></li>
+                                            <li *ngFor="let m of ingSer.ingredients!
+                                              [ingIndexForMesures!].measuresForIngredientList!">
+                                                <a class="dropdown-item" (click)="changeMeasure(i!.quantity!, i!.measureGorL!, i!.meashureID!, i!.g!, m!, i!.id!)">
+                                                    {{m.measureName}}</a></li>
+                                        </ul>
+                                    </span>
+                                    <!-- <i> {{i.programerNote}} איך ההערה תראה?</section> -->
+
+                                    <!--             
+                                        <span> {{i!.ingredientName != null? i!.ingredientName: i!.note}}</span>
+                                        <i>{{i!.note}} איך ההערה תראה?</section> -->
+                                    {{i!.ingredientName != null? i!.ingredientName:
+                                    i!.note}}
+                                    <section>{{i!.note}}</section>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- =========== כרטיסיית הרכיבים המומרים לבריאים יותר ==========================  -->
+            <div id="makeItHealthy" class="container tab-pane fade"><br>
+                <!-- <h3>makeItHealthy</h3> -->
+                <div dir="rtl" class="container mt-3">
+                    <!-- טבלה המסדרת את החומרים  -->
+                    <h2>הרכיבים:</h2>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr *ngFor="let i of ingredients!">
+                                <td *ngIf="i.healthyIngridientID! > 0 else notH">
+                                    <!-- סימון ויזואלי כי רכיב זה הומר -->
+                                    ✔ {{i!.healthyQuantity |number}}
+                                    <span class="dropdown">
+                                        <span (click)="GetMeasuresOfIng(i!.healthyIngridientID!, i.healthyMeashureID!)"
+                                            class="dropdown-toggle" data-bs-toggle="dropdown"> <span class="printMe_m">
+                                                {{i!.healthyQuantity! > 1? i!.healthyMeashurePlural!:
+                                                i!.healthyMeashure}}
+                                            </span>
+                                        </span>
+                                        <ul class="dropdown-menu">
+                                            <li><span class="dropdown-header">אמצעי המדידה בהם ניתן למדוד רכיב זה</span></li>
+                                            <li *ngIf="ingSer.ingredients!                                             [ingIndexForMesures!].measuresForIngredientList === undefined"><span
+                                                    class="dropdown-item-text alert">כרגע לא קיימים נתונים על אמצעי
+                                                    המדידה</span></li>
+                                            <li *ngFor="let m of ingSer.ingredients!
+                                          [ingIndexForMesures!].measuresForIngredientList!">
+                                                <a class="dropdown-item" (click)="changeMeasureHealthy(i!.healthyQuantity!, i!.healthyMeasureGorL!, i!.healthyMeashureID!, i!.healthyG!, m!, i!.id!)">
+                                                    {{m.measureName}}</a></li>
+                                        </ul>
+                                    </span>
+                                    {{i!.healthyIngridient != null? i!.healthyIngridient: i!.healthyNote}}
+                                    <section>{{i!.healthyNote}}</section>
+                                </td>
+                                <!--  אחרת - הצג את הרכיב המקורי- הרגיל -->
+                                <ng-template #notH>
+                                    <td>
+                                        {{i!.quantity|number}}
+                                        <!-- <span>{{i!.quantity | number}}</span> -->
+                                        <span class="dropdown">
+                                            <span (click)="GetMeasuresOfIng(i!.ingridientID!, i.meashureID!)" class="dropdown-toggle"
+                                                data-bs-toggle="dropdown"> <span class="printMe_m">
+                                                    {{i!.quantity! > 1? i!.measurePlural!: i!.measure}}
+                                                </span>
+                                            </span>
+                                            <ul class="dropdown-menu">
+                                                <li><span class="dropdown-header">אמצעי המדידה בהם ניתן למדוד רכיב
+                                                        זה</span></li>
+                                                <li *ngFor="let m of ingSer.ingredients!
+                                              [ingIndexForMesures!].measuresForIngredientList!">
+                                                    <a class="dropdown-item" (click)="changeMeasure(i!.quantity!, i!.measureGorL!, i!.meashureID!, i!.g!, m!, i!.id!)">
+                                                        {{m.measureName}}</a></li>
+                                            </ul>
+                                        </span>
+                                        <!-- <i> {{i.programerNote}} איך ההערה תראה?</section> -->
+
+                                        <!--             
+                                        <span> {{i!.ingredientName != null? i!.ingredientName: i!.note}}</span>
+                                        <i>{{i!.note}} איך ההערה תראה?</section> -->
+                                        {{i!.ingredientName != null? i!.ingredientName:
+                                        i!.note}}
+                                        <section>{{i!.note}}</section>
+                                    </td>
+                                </ng-template>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- =========== כרטיסיית הרכיבים המומרים לטבעוניים ==========================  -->
+            <div id="makeItVegan" class="container tab-pane fade"><br>
+                <!-- <h3>makeItVegan</h3> -->
+                <div dir="rtl" class="container mt-3">
+                    <!-- טבלה המסדרת את החומרים  -->
+                    <h2>הרכיבים:</h2>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr *ngFor="let i of ingredients!">
+                                <td *ngIf="i.veganIngridientID! > 0  else notVeg">
+                                    <!-- סימון ויזואלי כי רכיב זה הומר -->
+                                    ✔ {{i!.veganQuantity |number}}
+                                    <span class="dropdown">
+                                        <span (click)="GetMeasuresOfIng(i!.veganIngridientID!,i.veganMeashureID!)"
+                                            class="dropdown-toggle" data-bs-toggle="dropdown"><span class="printMe_m">
+                                                {{i!.veganQuantity! > 1? i!.veganMeashurePlural!: i!.veganMeashure}}
+                                            </span>
+                                        </span>
+                                        <ul class="dropdown-menu">
+                                            <li><span class="dropdown-header">אמצעי המדידה בהם ניתן למדוד רכיב זה</span></li>
+                                            <li *ngIf="ingSer.ingredients!                                             [ingIndexForMesures!].measuresForIngredientList === undefined"><span
+                                                    class="dropdown-item-text alert">כרגע לא קיימים נתונים על אמצעי
+                                                    המדידה</span></li>
+                                            <li *ngFor="let m of ingSer.ingredients!
+                                          [ingIndexForMesures!].measuresForIngredientList!">
+                                                <a class="dropdown-item" (click)="changeMeasure(i!.veganQuantity!, i!.veganMeasureGorL!, i!.veganMeashureID!, i!.veganG!, m!, i!.id!)">
+                                                    {{m.measureName}}</a></li>
+                                        </ul>
+                                    </span>
+                                    {{i!.veganIngridient != null? i!.veganIngridient: i!.veganNote}}
+                                    <section>{{i!.veganNote}}</section>
+                                </td>
+                                <!--  אחרת - הצג את הרכיב המקורי- הרגיל -->
+                                <ng-template #notVeg>
+                                    <td>
+                                        {{i!.quantity|number}}
+                                        <!-- <span>{{i!.quantity | number}}</span> -->
+                                        <span class="dropdown">
+                                            <span (click)="GetMeasuresOfIng(i!.ingridientID!, i.meashureID!)" class="dropdown-toggle"
+                                                data-bs-toggle="dropdown"> <span class="printMe_m">
+                                                    {{i!.quantity! > 1? i!.measurePlural!: i!.measure}}
+                                                </span>
+                                            </span>
+                                            <ul class="dropdown-menu">
+                                                <li><span class="dropdown-header">אמצעי המדידה בהם ניתן למדוד רכיב
+                                                        זה</span></li>
+                                                <li *ngFor="let m of ingSer.ingredients!
+                                              [ingIndexForMesures!].measuresForIngredientList!">
+                                                    <a class="dropdown-item" (click)="changeMeasure(i!.quantity!, i!.measureGorL!, i!.meashureID!, i!.g!, m!, i!.id!)">
+                                                        {{m.measureName}}</a></li>
+                                            </ul>
+                                        </span>
+                                        <!-- <i> {{i.programerNote}} איך ההערה תראה?</section> -->
+
+                                        <!--             
+                                        <span> {{i!.ingredientName != null? i!.ingredientName: i!.note}}</span>
+                                        <i>{{i!.note}} איך ההערה תראה?</section> -->
+                                        {{i!.ingredientName != null? i!.ingredientName:
+                                        i!.note}}
+                                        <section>{{i!.note}}</section>
+                                    </td>
+                                </ng-template>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+            <!-- =========== כרטיסיית הרכיבים המומרים ללא גלוטן ==========================  -->
+            <div id="makeItGlutenFree" class="container tab-pane fade"><br>
+                <!-- <h3>makeItGlutenFree</h3> -->
+
+                <div dir="rtl" class="container mt-3">
+                    <!-- טבלה המסדרת את החומרים  -->
+                    <h2>הרכיבים:</h2>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr *ngFor="let i of ingredients!">
+                                <td *ngIf="i.glutenFreeIngridientID! > 0  else notGf">
+                                    <!-- סימון ויזואלי כי רכיב זה הומר -->
+                                    ✔ {{i!.glutenFreeQuantity |number}}
+                                    <span class="dropdown">
+                                        <span (click)="GetMeasuresOfIng(i!.glutenFreeIngridientID!,i.glutenFreeMeashureID!)"
+                                            class="dropdown-toggle" data-bs-toggle="dropdown"> <span class="printMe_m">
+                                                {{i!.glutenFreeQuantity! > 1? i!.glutenFreeMeashurePlural!:
+                                                i!.glutenFreeMeashure}}
+                                            </span>
+                                        </span>
+                                        <ul class="dropdown-menu">
+                                            <li><span class="dropdown-header">אמצעי המדידה בהם ניתן למדוד רכיב זה</span></li>
+                                            <li *ngIf="ingSer.ingredients!
+                                            [ingIndexForMesures!].measuresForIngredientList === undefined"><span
+                                                    class="dropdown-item-text alert">כרגע לא קיימים נתונים על אמצעי
+                                                    המדידה</span></li>
+                                            <li *ngFor="let m of ingSer.ingredients!
+                                          [ingIndexForMesures!].measuresForIngredientList!">
+                                                <a class="dropdown-item" (click)="changeMeasure(i!.glutenFreeQuantity!, i!.glutenFreeMeasureGorL!, i!.glutenFreeMeashureID!, i!.glutenFreeG!, m!, i!.id!)">
+                                                    {{m.measureName}}</a></li>
+                                        </ul>
+                                    </span>
+                                    {{i!.glutenFreeIngridient != null? i!.glutenFreeIngridient: i!.glutenFreeNote}}
+                                    <section>{{i!.glutenFreeNote}}</section>
+                                </td>
+                                <!--  אחרת - הצג את הרכיב המקורי- הרגיל -->
+                                <ng-template #notGf>
+                                    <td>
+                                        {{i!.quantity|number}}
+                                        <!-- <span>{{i!.quantity | number}}</span> -->
+                                        <span class="dropdown">
+                                            <span (click)="GetMeasuresOfIng(i!.ingridientID!, i.meashureID!)" class="dropdown-toggle"
+                                                data-bs-toggle="dropdown"> <span class="printMe_m">
+                                                    {{i!.quantity! > 1? i!.measurePlural!: i!.measure}}
+                                                </span>
+                                            </span>
+                                            <ul class="dropdown-menu">
+                                                <li><span class="dropdown-header">אמצעי המדידה בהם ניתן למדוד רכיב
+                                                        זה</span></li>
+                                                <li *ngFor="let m of ingSer.ingredients!
+                                              [ingIndexForMesures!].measuresForIngredientList!">
+                                                    <a class="dropdown-item" (click)="changeMeasure(i!.quantity!, i!.measureGorL!, i!.meashureID!, i!.g!, m!, i!.id!)">
+                                                        {{m.measureName}}</a></li>
+                                            </ul>
+                                        </span>
+                                        <!-- <i> {{i.programerNote}} איך ההערה תראה?</section> -->
+
+                                        <!--             
+                                        <span> {{i!.ingredientName != null? i!.ingredientName: i!.note}}</span>
+                                        <i>{{i!.note}} איך ההערה תראה?</section> -->
+                                        {{i!.ingredientName != null? i!.ingredientName:
+                                        i!.note}}
+                                        <section>{{i!.note}}</section>
+                                    </td>
+                                </ng-template>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- =========== כרטיסיית הרכיבים המומרים לפרווה ==========================  -->
+            <div id="makeItParve" class="container tab-pane fade"><br>
+                <div dir="rtl" class="container mt-3">
+                    <!-- טבלה המסדרת את החומרים  -->
+                    <h2>הרכיבים:</h2>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr *ngFor="let i of ingredients!">
+                                <td *ngIf="i.parveIngridientID! > 0  else notP">
+                                    <!-- סימון ויזואלי כי רכיב זה הומר -->
+                                    ✔ {{i!.parveQuantity |number}}
+                                    <span class="dropdown">
+                                        <span (click)="GetMeasuresOfIng(i!.parveIngridientID!, i.parveMeashureID!)"
+                                            class="dropdown-toggle" data-bs-toggle="dropdown"> <span class="printMe_m">
+                                                {{i!.parveQuantity! > 1? i!.parveMeashurePlural!: i!.parveMeashure}}
+                                            </span>
+                                        </span>
+                                        <ul class="dropdown-menu">
+                                            <li><span class="dropdown-header">אמצעי המדידה בהם ניתן למדוד רכיב זה</span></li>
+                                            <li *ngIf="ingSer.ingredients!                                             [ingIndexForMesures!].measuresForIngredientList === undefined"><span
+                                                    class="dropdown-item-text alert">כרגע לא קיימים נתונים על אמצעי
+                                                    המדידה</span></li>
+                                            <li *ngFor="let m of ingSer.ingredients!
+                                          [ingIndexForMesures!].measuresForIngredientList!">
+                                                <a class="dropdown-item" (click)="changeMeasure(i!.parveQuantity!, i!.parveMeasureGorL!, i!.parveMeashureID!, i!.parveG!, m!, i!.id!)">
+                                                    {{m.measureName}}</a></li>
+                                        </ul>
+                                    </span>
+                                    {{i!.parveIngridient != null?
+                                    i!.parveIngridient: i!.parveNote}}
+                                    <section>{{i!.parveNote}}</section>
+                                </td>
+                                <ng-template #notP>
+                                    <td>
+                                        {{i!.quantity|number}}
+
+                                        <!-- <span>{{i!.quantity | number}}</span> -->
+                                        <span class="dropdown">
+                                            <span (click)="GetMeasuresOfIng(i!.ingridientID!, i.meashureID!)" class="dropdown-toggle"
+                                                data-bs-toggle="dropdown"> <span class="printMe_m">
+                                                    {{i!.quantity! > 1? i!.measurePlural!: i!.measure}}
+                                                </span>
+                                            </span>
+                                            <ul class="dropdown-menu">
+                                                <li><span class="dropdown-header">אמצעי המדידה בהם ניתן למדוד רכיב
+                                                        זה</span></li>
+                                                <li *ngFor="let m of ingSer.ingredients!
+                                              [ingIndexForMesures!].measuresForIngredientList!">
+                                                    <a class="dropdown-item" (click)="changeMeasure(i!.quantity!, i!.measureGorL!, i!.meashureID!, i!.g!, m!, i!.id!)">
+                                                        {{m.measureName}}</a></li>
+                                            </ul>
+                                        </span>
+                                        <!-- <i> {{i.programerNote}} איך ההערה תראה?</section> -->
+
+                                        <!--             
+                                        <span> {{i!.ingredientName != null? i!.ingredientName: i!.note}}</span>
+                                        <i>{{i!.note}} איך ההערה תראה?</section> -->
+                                        {{i!.ingredientName != null? i!.ingredientName:
+                                        i!.note}}
+                                        <section>{{i!.note}}</section>
+
+                                    </td>
+                                </ng-template>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- <button class="btn"> אפשר לעשות פה "הצג רכיב מקורי" לשם השואה קלה </button> -->
+
+                <!-- </div> -->
+            </div>
+
+            <!-- =========== כרטיסיית הרכיבים המומרים לנטול בוטנים ==========================  -->
+            <div id="makeItNutFree" class="container tab-pane fade"><br>
+                <!-- <h3>makeItNutFree</h3> -->
+                <div dir="rtl" class="container mt-3">
+                    <!-- טבלה המסדרת את החומרים  -->
+                    <h2>הרכיבים:</h2>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr *ngFor="let i of ingredients!">
+                                <td *ngIf="i.nutFreeIngridientID! > 0">
+                                    <!-- סימון ויזואלי כי רכיב זה הומר -->
+                                    ✔ {{i!.nutFreeQuantity |number}}
+                                    <span class="dropdown">
+                                        <span (click)="GetMeasuresOfIng(i!.nutFreeIngridientID!, i.nutFreeMeashureID!)"
+                                            class="dropdown-toggle" data-bs-toggle="dropdown"> <span class="printMe_m">
+                                                {{i!.nutFreeQuantity! > 1? i!.nutFreeMeashurePlural!:
+                                                i!.nutFreeMeashure}}
+                                            </span>
+                                        </span>
+                                        <ul class="dropdown-menu">
+                                            <li><span class="dropdown-header">אמצעי המדידה בהם ניתן למדוד רכיב זה</span></li>
+                                            <li *ngIf="ingSer.ingredients!                                             [ingIndexForMesures!].measuresForIngredientList === undefined"><span
+                                                    class="dropdown-item-text alert">כרגע לא קיימים נתונים על אמצעי
+                                                    המדידה</span></li>
+                                            <li *ngFor="let m of ingSer.ingredients!
+                                          [ingIndexForMesures!].measuresForIngredientList!">
+                                                <a class="dropdown-item" (click)="changeMeasureNutFree(i!.nutFreeQuantity!, i!.nutFreeMeasureGorL!, i!.nutFreeMeashureID!, i!.nutFreeG!, m!, i!.id!)">
+                                                    {{m.measureName}}</a></li>
+                                        </ul>
+                                    </span>
+                                    {{i!.nutFreeIngridient != null? i!.nutFreeIngridient: i!.nutFreeNote}}
+                                    <section>{{i!.nutFreeNote}}</section>
+                                </td>
+                                <!--  אחרת - הצג את הרכיב המקורי- הרגיל -->
+                                <td *ngIf="!(i.nutFreeIngridientID! > 0)">
+                                    {{i!.quantity|number}}
+                                    <!-- <span>{{i!.quantity | number}}</span> -->
+                                    <span class="dropdown">
+                                        <span (click)="GetMeasuresOfIng(i!.ingridientID!, i.meashureID!)" class="dropdown-toggle"
+                                            data-bs-toggle="dropdown">
+                                            <span class="printMe_m">{{i!.quantity! > 1? i!.measurePlural!: i!.measure}}</span>
+                                        </span>
+                                        <ul class="dropdown-menu">
+                                            <li><span class="dropdown-header">אמצעי המדידה בהם ניתן למדוד רכיב זה</span></li>
+                                            <li *ngIf="ingSer.ingredients!                                             [ingIndexForMesures!].measuresForIngredientList === undefined"><span
+                                                    class="dropdown-item-text alert">כרגע לא קיימים נתונים על אמצעי
+                                                    המדידה</span></li>
+                                            <li *ngFor="let m of ingSer.ingredients!
+                                              [ingIndexForMesures!].measuresForIngredientList!">
+                                                <a class="dropdown-item" (click)="changeMeasure(i!.quantity!, i!.measureGorL!, i!.meashureID!, i!.g!, m!, i!.id!)">
+                                                    {{m.measureName}}</a></li>
+                                        </ul>
+                                    </span>
+                                    {{i!.ingredientName != null? i!.ingredientName:
+                                    i!.note}}
+                                    <section>{{i!.note}}</section>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <!-- ===================== ההוראות הכנה ================== -->
+            <div class="container text-end">
+                <h4 class=" ">אופן ההכנה:</h4>
+                <!-- white-space: pre-line - 
+                הגדרה הגורמת שהטקסט יוצג כפי שהמשתמש הזין אותו - כולל ירידות שורה והזחות -->
+                <p class=" " style="white-space: pre-line; page-break-inside: avoid">{{currentRecipy!.instractions}}</p>
+
+                <div *ngIf="currentRecipy!.notes != ''">
+                    <h4 class=" ">הערות:</h4>
+                    <p class=" " style="white-space: pre-line">{{currentRecipy!.notes}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <h3 class=" ">בתאבון!</h3> -->
+
+    <!-- </div> -->
+
+
+
+    <!-- הצגת תגובות למתכון -->
+    <div class="container  mt-3 notPrintMe" dir="rtl" style="page-break-inside: avoid">
+
+
+        <div class="container">            <!-- תגובות  -->
+            <app-responses id="respo-des" [recipyID]='currentRecipy!.recipyID!'></app-responses>
+        </div>
+    </div>
+</div>

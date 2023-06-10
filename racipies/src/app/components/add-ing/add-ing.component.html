@@ -1,0 +1,133 @@
+<div class="container m-10 p-10" dir="rtl">
+  <div class="modal-header" dir="ltr">
+    <h2 class="modal-title">הוספת רכיב חדש</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modalRef.close('close click')"></button>
+  </div>
+  <form  (ngSubmit)="close('save click')" #theForm='ngForm'>
+    <div class="container m-10 p-10">
+      <br>
+      <div class="row mb-3">
+        <input type="text" class="form-control" placeholder="שם הרכיב" [(ngModel)]="newIng.name" name="name" #ingName="ngModel"  required minlength="2" maxlength="300">
+        <span *ngIf='ingName.invalid && (ingName.touched)'>
+          <p class="alert-danger" for="ingName" *ngIf="ingName.errors!['required']">שם הוא שדה חובה</p>
+          <p class="alert-danger" for="ingName" [hidden]="!ingName.errors!['minlength']">שם מכיל לפחות 2 אותיות
+          </p>
+          <p class="alert-danger" for="ingName" [hidden]="!ingName.errors!['maxlength']">שם אינו יכול להכיל
+              יותר
+              מ-300
+              תווים </p>
+      </span>
+
+      </div>
+      <div class="row mb-3">
+        <input type="text" class="form-control" placeholder="צורת הרבים (אם ישנה)" [(ngModel)]="newIng.pluralForm" name="pswd">
+      </div>
+      <div class="row mb-3">
+        <input type="number" step="0.001" class="form-control" min="0" placeholder="קלוריות ב100 גרם/מילילטר" [(ngModel)]="newIng.calloriesPer100g" name="pswd">
+      </div>
+    </div>
+
+    <br>
+
+    <h4>נא סמן את הסיווגים עליהם עונה הרכיב</h4>
+    <div class="row">
+      <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-text">
+            <input type="checkbox" name="isNutFree" [(ngModel)]="newIng.isNutFree">
+          </div>
+          <input type="text" class=" form-control" value="נטול בוטנים" disabled>
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-text">
+            <input type="checkbox" name="isGlutenFree" [(ngModel)]="newIng.isGlutenFree">
+          </div>
+          <input type="text" class=" form-control" value="נטול גלוטן" disabled>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-text" >
+            <input type="checkbox" [(ngModel)]="newIng.isParve" name="isParve">
+          </div>
+          <input type="text" class=" form-control" value="נטול לקטוז" disabled>
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-text">
+            <input type="checkbox" [(ngModel)]="newIng.isNutFree" name="isNutFree">
+          </div>
+          <input type="text" class=" form-control" value="נטול אגוזים" disabled>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-text">
+            <input type="checkbox" name=""> 
+            <!-- [(ngModel)]="newIng.isVegertian" -->
+          </div>
+          <input type="text" class=" form-control" value="צמחוני" disabled>
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-text">
+            <input type="checkbox" name="isVegan" [(ngModel)]="newIng.isVegan">
+          </div>
+          <input type="text" class=" form-control" style="background:none;" value="טבעוני" disabled>
+        </div>
+      </div>
+    </div>
+
+
+
+    <h4>נא בחר בסיווג הכשרותי של הרכיב</h4>
+    <div class="row">
+
+
+      <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-text">
+            <input type="radio" name="cosherType" id="c" (click)="dairy()">
+          </div>
+          <input type="text" class="form-control" value="חלבי" disabled>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-text">
+            <input type="radio" name="cosherType" id="p" (click)="parve()">
+          </div>
+          <input type="text" class="form-control" value="פרווה"
+           disabled>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-text">
+            <input type="radio" name="cosherType" id="b" (click)="meaty()">
+          </div>
+          <input type="text" class="form-control" value="בשרי" disabled>
+        </div>
+      </div>
+      
+    </div>
+    <div class="modal-footer">
+      <input type="submit" class="btn btn-primary" value="הוסף רכיב"
+      [disabled]="!theForm.valid">
+      <input type="button" class="btn btn-secondary" (click)="modalRef.close('close click')" value="ביטול">
+    </div>
+  </form>
+
+
+</div>

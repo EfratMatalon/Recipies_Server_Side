@@ -1,0 +1,90 @@
+<!-- <div class="form-floating mb-3 mt-3"> 
+   <label for="strToSearch">חיפוש</label> 
+-->
+
+<div dir="ltr" class="input-group mt-3 mb-3">
+    <!-- drop-down של אפשרויות המיון והחיפוש במתכונים -->
+    <button type="button" class="btn btn-lg btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+        <!-- ספינר שיוצג בעת מיון - לתת הרגשה שמשו קורה -->
+        <span *ngIf="isLoading == true" class="spinner-border spinner-border-sm"> </span>
+        חיפוש
+    </button>
+    <ul dir="rtl" class="dropdown-menu" style="text-align: right;">
+        <!--  ======== אפשרויות   חיפוש  =====  -->
+        <li>
+            <p class="dropdown-header">חפש לפי:</p>
+        </li>
+        <li><a class="dropdown-item" (click)="searchWriter = false">שם המתכון</a></li>
+        <li><a class="dropdown-item" (click)="searchWriter = true">שם מפרסם המתכון</a></li>
+
+        <!-- ===== מיון אפשרויות =========== -->
+        <!-- loading() גורם שבלחיצה יוצג ספינר לחצי שניה -->
+        <li>
+            <p class="dropdown-header">מיין לפי:</p>
+        </li>
+        <li><a class="dropdown-item" (click)="filedOrderBy = 'name';desc = false;isNumeric = false;loading()">שם המתכון
+                - א-ת</a></li>
+        <li><a class="dropdown-item" (click)="filedOrderBy = 'name';desc = true;isNumeric = false;loading()">שם המתכון
+                - ת-א</a></li>
+        <li><a class="dropdown-item" (click)="filedOrderBy = 'writerName';desc = false;isNumeric = false;loading()">שם
+                מפרסם המתכון - א-ת</a></li>
+        <li><a class="dropdown-item" (click)="filedOrderBy = 'writerName';desc = true;isNumeric = false;loading()">שם
+                מפרסם המתכון - ת-א</a></li>
+        <li><a class="dropdown-item" (click)="filedOrderBy = 'numOfLikes';desc = true;isNumeric = true;loading()">פופולאריות</a></li>
+        <li><a class="dropdown-item" (click)="filedOrderBy = 'recipyID';desc = true;isNumeric = true;loading()">מהחדש
+                לישן</a></li>
+        <li><a class="dropdown-item" (click)="filedOrderBy = 'recipyID';desc = false;isNumeric = true;loading()">מהישן
+                לחדש</a></li>
+        <li><a class="dropdown-item" (click)="filedOrderBy = 'dificultLevel';desc = false;isNumeric = true;loading()">רמת
+                קושי - מהקל לקשה</a></li>
+        <li><a class="dropdown-item" (click)="filedOrderBy = 'dificultLevel';desc = true;isNumeric = true;loading()">רמת
+                קושי - מהקשה לקל</a></li>
+        <li><a class="dropdown-item" (click)="filedOrderBy = 'time';desc = false;isNumeric = false;loading()">זמן הכנה
+                - מהמהיר לממושך</a></li>
+    </ul>
+    <!-- ===== טקסט לחיפוש  ======= -->
+    <input type="text" class="form-control form-control-lg" id="strToSearch" placeholder="הזן את שם {{searchWriter? 'מפרסם': ''}} המתכון אותו תרצה לראות"
+        name="strToSearch" style="text-align: right;" [(ngModel)]="strToSearch">
+</div>
+<div class="container mt-3">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+        <!-- ======== הצגת המתכונים =========
+      * ממוינים בסדר שהתבקש
+      * מסוננים, כך שיוצגו רק אלו שששמם/שם יוצרם מכיל את המחרוזת שחיפשו
+      * מסוננים, כך שיוצגו רק מתכונים מהקטגוריה שנבחרה -->
+        <ng-container *ngFor="
+                let c of listRecepies!  
+                | search:strToSearch : (searchWriter? 'writerName': 'name')
+                | filter : 'categoryID': catID
+                | filter: special! : isSpecial
+                | orderBy: filedOrderBy: desc: isNumeric  
+                ">
+            <!-- === TODO לבדוק איך אפשר לסנן לפ הסיווג -->
+            <div class="card shadow" style="width:30%; margin-bottom: 15px; 
+            margin-top: 15px; cursor: pointer;">
+                <div (click)="fullResipy(c.recipyID)">
+                    <img class="card-img-top w3-hover-opacity" src="http://localhost:58285/images/{{c.image | replace:'[.]' : '_min.'}}"
+                        alt="{{c.name}}" style="width:100%">
+                    <div class="card-body">
+                        <h4 class="card-title">{{c.name}}</h4>
+                        <!-- == הצגת שדה שרלוונטי למיון הנוכחי == -->
+                        <h6 *ngIf="filedOrderBy == 'time'">⏱ {{c!.time}}</h6>
+                        <h6 *ngIf="filedOrderBy == 'writerName' || searchWriter">{{c!.writerName}}</h6>
+                        <h6 *ngIf="filedOrderBy == 'numOfLikes'"><i>{{c!.numOfLikes}} אהבו</i></h6>
+                        <h6 *ngIf="filedOrderBy == 'recipyID'">{{c!.insertationDate|date:"dd/MM/yyyy"}}</h6>
+                        <h6 *ngIf="filedOrderBy == 'dificultLevel'">{{c!.dificultLevel! == 1? "🥄 קל מאד":
+                            c!.dificultLevel! == 2? "🍴 קל":
+                            c!.dificultLevel! == 3? "🍽 מאתגר":
+                            c!.dificultLevel! == 4? "👨‍🍳 קשה": ""}}
+                        </h6>
+
+                        <!-- == חלק מהתיאור (עד 74 תווים) ולאחריהם 3 נקודות == -->
+                        <div style="height:90px; overflow: hidden;">
+                            <span class="card-text" style="width:30px; height: auto;">{{c.description!|substr:0:74:"..."}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>

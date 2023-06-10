@@ -1,0 +1,86 @@
+<!-- Navbar (sit on top) -->
+<nav class="w3-top">
+    <div class="w3-bar w3-white w3-padding w3-card" style="letter-spacing:4px;">
+        <a href="#home" class="w3-bar-item w3-button"> 🍽 Food4U</a>
+        <!-- Right-sided navbar links. Hide them on small screens -->
+        <div class="w3-right w3-hide-small">
+            
+            <a class="w3-bar-item w3-button" routerLink="add">להעלאת מתכון</a>
+            <a class="w3-bar-item w3-button" routerLink="fevo">למועדפים שלי</a>
+            <a class="w3-bar-item w3-button" routerLink="registeration">הרשמה</a>
+            <a class="w3-bar-item w3-button" routerLink="login">התחברות</a>
+            <a class="w3-bar-item w3-button" routerLink="home">דף הבית</a></div>
+    </div>
+</nav>
+
+<!-- <div style="display: flex;" ><app-side-nav></app-side-nav></div> -->
+<div style="margin-top: 50px;">
+    <!--  class="container" role="main" -->
+    <router-outlet></router-outlet>
+</div>
+
+
+<!-- <div style="display: flex;">
+    <app-side-nav></app-side-nav>
+    <div class="container" role="main">
+        <router-outlet></router-outlet>
+    </div>
+</div> -->
+
+
+
+
+<!-- העיצוב של הכרטיסים למטה  -->
+
+<!-- Next Steps -->
+
+<div class="content">
+    <h2>Next Steps</h2>
+    <p>What do you want to do next with your app?</p>
+
+    <input type="hidden" #selection>
+
+    <div class="card-container">
+        <button class="card card-small" (click)="selection.value = 'component'" tabindex="0">
+            <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            <span>New Component</span>
+        </button>
+
+        <button class="card card-small" (click)="selection.value = 'material'" tabindex="0">
+            <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            <span>Angular Material</span>
+        </button>
+
+        <button class="card card-small" (click)="selection.value = 'pwa'" tabindex="0">
+            <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            <span>Add PWA Support</span>
+        </button>
+
+        <button class="card card-small" (click)="selection.value = 'dependency'" tabindex="0">
+            <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            <span>Add Dependency</span>
+        </button>
+
+        <button class="card card-small" (click)="selection.value = 'test'" tabindex="0">
+            <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            <span>Run and Watch Tests</span>
+        </button>
+
+        <button class="card card-small" (click)="selection.value = 'build'" tabindex="0">
+            <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            <span>Build for Production</span>
+        </button>
+    </div>
+</div>

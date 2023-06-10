@@ -1,0 +1,11 @@
+@media screen and (max-width:500){
+    .card-body {
+        font-size: 5px !important;
+    }
+    .card-title{
+        font-size: 5px !important;
+    }
+    .card-text{
+        display: none;
+    }
+}

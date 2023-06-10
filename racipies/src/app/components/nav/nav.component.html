@@ -1,0 +1,76 @@
+ <!-- sticky-top כוללת הגדרה של z index ל - 1020
+   וזה גורם שהקרוסלה לא תעלה עליו
+  שיניתי את זה גם בהגדרות של w3-top - 
+  כך שניתן עכשיו להשתמש גם בו וגם בו -->
+   
+
+<nav class="sticky-top"> 
+  <div class="w3-bar w3-white w3-padding w3-card" style="letter-spacing:4px;">
+       <!-- כפתור להצגת מסך עומד - במסכים קטנים -->
+        <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" 
+            onclick="myFunction()" title="Toggle Navigation Menu">
+            <i class="fa fa-bars">☰</i>
+        </a>
+        <a href="#home" class="w3-bar-item w3-button"> 🍽 Food4U</a>
+        <!-- Right-sided navbar links. Hide them on small screens -->
+        <div class="w3-right w3-hide-small">
+              <!-- סימון שיש כפתור כשמקטינים -->
+        <!-- <a class="w3-padding-large w3-hover-red"><i class="fa fa-search"></i></a> -->
+   
+        <!-- הלינקים בנאב -->
+            <a class="w3-bar-item w3-button nav-link" routerLink="/registeration">הרשמה</a>
+            <a class="w3-bar-item w3-button nav-link" routerLink="/login">התחברות</a>
+            <a class="w3-bar-item w3-button nav-link" routerLink="/home">דף הבית</a>
+        </div>
+       </div>
+</nav>
+
+<!-- בשביל מסכים קטנים - תפריט עומד -->
+<div id="navDemo" class="w3-bar-block  w3-white w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+    <a class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()" routerLink="/registeration">הרשמה</a>
+    <a class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()" routerLink="/login">התחברות</a>
+    <a class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()" routerLink="/home">דף הבית</a>
+</div>
+
+<!--  הקומפוננטות של ברירת מחדל -->
+<div style="margin-top: 2px;">
+    <router-outlet></router-outlet>
+</div>
+
+
+<script>
+        // Automatic Slideshow - change image every 4 seconds
+        var myIndex = 0;
+        carousel();
+        
+        function carousel() {
+          var i;
+          var x = document.getElementsByClassName("mySlides");
+          for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";  
+          }
+          myIndex++;
+          if (myIndex > x.length) {myIndex = 1}    
+          x[myIndex-1].style.display = "block";  
+          setTimeout(carousel, 4000);    
+        }
+        
+        // Used to toggle the menu on small screens when clicking on the menu button
+        function myFunction() {
+            debugger;
+          var x = document.getElementById("navDemo");
+          if (x.className.indexOf("w3-show") == -1) {
+            x.className += " w3-show";
+          } else { 
+            x.className = x.className.replace(" w3-show", "");
+          }
+        }
+        
+        // When the user clicks anywhere outside of the modal, close it
+        var modal = document.getElementById('ticketModal');
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        }
+        </script>

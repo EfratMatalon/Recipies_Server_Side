@@ -1,0 +1,78 @@
+
+<div class="container mt-3" dir="rtl">
+    <h2>הרשם  באתר</h2>
+    <p>משתמש רשום יכול לבצע קניה בקלות, בלי להכניס כל פעם מדש פרטים</p>
+    <form (ngSubmit)="save()" [formGroup]='myForm' dir="rtl">
+        <div class="form mt-3 mb-3">
+            <label for="fName">שם פרטי:</label>
+            <input type="text" class="form-control form-control-lg" id="fName" formControlName='fName' placeholder="הזן שם פרטי"
+                name="fName">
+            <span *ngIf='getfName().invalid && (getfName().touched || getfName().dirty)'>
+                <p class="alert-danger" for="fName" *ngIf="getfName().errors!['minlength']">שם מכיל לפחות 2 אותיות </p>
+                <p class="alert-danger" for="fName" *ngIf="getfName().errors!['maxlength']">שם אינו יכול להכיל יותר
+                    מ-20
+                    אותיות </p>
+                <p class="alert-danger" for="fName" *ngIf="getfName().errors!['pattern']">שם מכיל אותיות בלבד </p>
+                <p class="alert-danger" for="fName" *ngIf="getfName().errors!['required']">שם פרטי הוא שדה חובה</p>
+            </span>
+        </div>
+        <div class="form mt-3 mb-3">
+            <label for="lName">שם משפחה:</label>
+            <input type="text" class="form-control form-control-lg" id="lName" formControlName='lName' placeholder="הזן שם משפחה"
+                name="lName">
+            <span *ngIf='getlName().invalid && (getlName().touched || getlName().dirty)'>
+                <p class="alert-danger" for="lName" *ngIf="getlName().errors!['minlength']">שם מכיל לפחות 2 אותיות </p>
+                <p class="alert-danger" for="lName" *ngIf="getlName().errors!['maxlength']">שם אינו יכול להכיל יותר
+                    מ-20
+                    אותיות </p>
+                <p class="alert-danger" for="lName" *ngIf="getlName().errors!['pattern']">שם מכיל אותיות בלבד </p>
+            </span>
+        </div>
+        <div class="form mb-3 mt-3">
+            <label for="email" class="form-label">דואר אלקטרוני:</label>
+            <input type="email" class="form-control form-control-lg" id="email" formControlName="email" placeholder="הזן דואר אלקטרוני"
+                name="email">
+            <span *ngIf='getEmail().invalid && getEmail().touched'>
+                <p class="alert-danger" for="email" *ngIf="getEmail().errors!['email']">יש להזין כתובת דואר אלקטרוני
+                    חוקית </p>
+            </span>
+        </div>
+        <div class="form mb-3 mt-3">
+            <label for="pwd" class="form-label">סיסמא:</label>
+            <input type="password" class="form-control form-control-lg" formControlName="pwd" id="pwd" placeholder="הזן סיסמא בת 8 תוים לפחות"
+                name="pwd" [(ngModel)]="pwdToValid">
+            <span *ngIf='getPwd().invalid && (getPwd().touched || getPwd().dirty)'>
+                <p class="alert-danger" for="pwd" *ngIf="getPwd().errors!['minlength']">סיסמא בטוחה מכילה לפחות 8 תוים
+                </p>
+                <p class="alert-danger" for="pwd" *ngIf="getPwd().errors!['maxlength']">סיסמא תקינה אינה יכולה להכיל
+                    יותר מ-50 תוים </p>
+                <p class="alert-danger" for="pwd" *ngIf="getPwd().errors!['required']">סיסמא היא שדה חובה</p>
+            </span>
+        </div>
+        <!--===================== אישור סיסמא ============================ -->
+        <div class="form mb-3 mt-3" *ngIf="getPwd().valid && getPwd().touched">
+            <label for="pwdV" class="form-label">אשר סיסמא:</label>
+            <input type="password" class="form-control form-control-lg" id="pwdV" placeholder=" הזן את הסיסמא שיצרת לעיל"
+                name="pwdV" formControlName="pwdV">
+            <span *ngIf='getPwdV().invalid && (getPwdV().touched)'>
+                <p class="alert-danger" for="pwdV" *ngIf="getPwdV().errors!['unValid-pwd'] && !getPwdV().errors!['required']">
+                    הסיסמא אינה זהה לסיסמא שיצרת </p>
+                <p class="alert-danger" for="pwdV" *ngIf="getPwdV().errors!['required']">חובה לאשר את הסיסמא</p>
+            </span>
+        </div>
+
+        <!-- האם לשלוח מייל? - להוסיף פרוט - תמיד, טבעוני, ללא גלוטן וכו -->
+        <div class="form-check mb-3">
+            <label class="form-check-label">
+              <input class="form-check-input" type="checkbox" name="remember" required> שלחו לי מייל כשיש דברים חדשים
+            </label>
+          </div>
+
+        <div class="form-check mb-3">
+            <label class="form-check-label">
+              <input class="form-check-input" type="checkbox" name="remember" required> קראתי והסכמתי לתקנון השימוש באתר
+            </label>
+          </div>
+        <button type="submit" class="btn btn-primary" [disabled]="!myForm.valid">הרשם</button>
+    </form>
+</div>

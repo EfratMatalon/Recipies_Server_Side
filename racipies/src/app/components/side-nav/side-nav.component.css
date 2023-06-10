@@ -1,0 +1,22 @@
+.d {
+    /* width: 130px; */
+    /* position: fixed; //אם נרצה שיעמוד בלי לזוז
+    z-index: 1;
+    top: 200px;
+    right: 10px; */
+    background: none;
+    overflow-x: hidden;
+    padding: 8px;
+    cursor: unset;
+  }
+
+.d a{
+  cursor: pointer;
+}
+
+
+@media screen and (max-width: 750px){
+  #side-nav-news{
+    display: none;
+  }  
+}

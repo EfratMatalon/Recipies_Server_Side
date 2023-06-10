@@ -1,0 +1,9 @@
+
+<form (ngSubmit)=onProve() id="ormResToAdd" >
+        <textarea placeholder="הוסף תגובה" class="form-control mt-3" id="resToAdd"
+          required pattern='(.*[^ ]+.*)+' #resToRec='ngModel'
+            [(ngModel)]="resToAdd" name="resToRec"></textarea>
+        <div dir="ltr" *ngIf="!resToRec.invalid && (resToRec.touched || resToRec.dirty)">
+            <button type="submit" class="btn btn-sm btn-primary">פרסם</button>
+        </div>
+    </form>

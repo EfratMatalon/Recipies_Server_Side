@@ -1,0 +1,37 @@
+<!-- ===== הוספת תגובה למתכון -->
+<app-add-response (prove)="onProve($event)"></app-add-response>
+
+<!--  הצגת התגובות -->
+<div *ngFor="let res of responses | filter: 'toRes': -1|orderBy: 'resID': true">
+    <!-- <img src="../../../assets/avatar1.png" alt="Avatar Logo" style="width:40px;" class="rounded-pill">  -->
+    <span style="width:40px; background-color: grey; font-size: 50px; " class="rounded-pill">👨🏼‍🍳</span>
+    <div class="card" id="res{{res.resID}}">
+        <div class="card-body">
+            <h4 class="card-title">
+                {{res.firstName}} {{res.lastName + "  "}} 
+                <span style="color: grey; font-style: italic; font-size: smaller">   
+                    {{res.resDate  | dateAndMore:""}}</span>
+            </h4>
+            <p class="card-text" style="white-space: pre-line; ">{{res.content}}</p>
+            <!-- הוספת תגובה לתגובה -->
+            <button class="card-link btn btn-link" (click)="onWantToResponse('res'+ res!.resID)">הגב
+                ל{{res.firstName}}</button>
+        </div>
+    </div>
+    <ng-container *ngIf="toRes ==  res.resID!">
+        <app-add-response (prove)="onProveToRes($event)"></app-add-response>
+    </ng-container>
+    <br>
+    <!-- הצגת התגובות לתגובות -->
+    <div style="margin-right: 20%; margin-bottom: 6px;" class="card" *ngFor="let res of responses | filter: 'toRes': res.resID!">
+        <div class="card-body">
+            <h4 class="card-title">
+                    <span style="color: grey; font-style: italic; font-size: smaller">   
+                            {{res.resDate  | dateAndMore:""}}</span>
+                {{res.firstName}} {{res.lastName}} </h4>
+            <p class="card-text" style="white-space: pre-line;">{{res.content}}</p>
+            <!-- <a href="#" class="card-link">הגב ל{{res.firstName}}</a> -->
+        </div>
+    </div>
+    <br>
+</div>

@@ -1,0 +1,27 @@
+
+
+@media print {
+    body * { visibility: hidden; }
+    .printMe  * { visibility: visible; }
+    .printMe { visibility: visible; border: 3px solid black; padding: 5%;
+          position: absolute;top:0;right:0;left:0;z-index:1030 }
+    .printMe .notPrintMe * { visibility: hidden; position: absolute;}
+    .notPrintMe{visibility: hidden;  position: absolute;}
+    .tab-pane{page-break-inside: avoid; page-break-after: auto;page-break-before: auto;}
+    .dropdown *{visibility: hidden;}
+    .dropdown-toggle {visibility: hidden;position: absolute;}
+    .dropdown-menu *{visibility: hidden;}
+    .printMe_m  * { visibility: visible; }
+
+}
+
+
+
+nav {
+
+    /* font-family: "Playfair Display"; */
+    letter-spacing: 5px;
+    font-family: "Times New Roman", Georgia, Serif;
+    color:black;
+
+}

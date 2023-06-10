@@ -1,0 +1,9 @@
+/* a.w3-bar-item.w3-button[routerLink]
+:visited
+{background-color:green;} */
+
+
+.nav-link.active, a:active{
+    color: #fff !important;
+    background-color: #29292c !important;
+  }

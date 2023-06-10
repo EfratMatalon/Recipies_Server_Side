@@ -1,0 +1,36 @@
+<div class="mt-4 p-5 text-white rounded bg-primary" dir="rtl">
+     <!-- style="background: darkgrey" -->
+    <h2>הזן שם משתמש וסיסמא על מנת להתחבר, ולזכות ליכולות משופרות</h2>
+    <form (ngSubmit)="save()" [formGroup]='myForm' dir="rtl">
+        <div class="form mt-3 mb-3">
+            <label for="fName">שם משתמש:</label>
+            <input  type="text" class="form-control form-control-lg" id="fName" formControlName='fName' placeholder="הזן שם משתמש - שם פרטי + שם משפחה"
+                name="fName">
+            <span *ngIf='getfName().invalid && (getfName().touched || getfName().dirty)'>
+                <p class="alert-danger" for="fName" *ngIf="getfName().errors!['minlength']">שם מכיל לפחות 2 אותיות </p>
+                <p class="alert-danger" for="fName" *ngIf="getfName().errors!['maxlength']">שם אינו יכול להכיל יותר
+                    מ-20
+                    אותיות </p>
+                <p class="alert-danger" for="fName" *ngIf="getfName().errors!['pattern']">שם מכיל אותיות בלבד </p>
+                <p class="alert-danger" for="fName" *ngIf="getfName().errors!['required']">שם פרטי הוא שדה חובה</p>
+            </span>
+        </div>
+
+        <div class="form mb-3 mt-3">
+            <label for="pwd" class="form-label">סיסמא:</label>
+            <input type="password" class="form-control form-control-lg" formControlName="pwd" id="pwd"
+             placeholder="הזן סיסמא בת 8 תוים לפחות"
+                name="pwd">
+            <span *ngIf='getPwd().invalid && (getPwd().touched || getPwd().dirty)'>
+                <p class="alert-danger" for="pwd" *ngIf="getPwd().errors!['minlength']">סיסמא בטוחה מכילה לפחות 8 תוים
+                </p>
+                <p class="alert-danger" for="pwd" *ngIf="getPwd().errors!['maxlength']">סיסמא תקינה אינה יכולה להכיל
+                    יותר מ-50 תוים </p>
+                <p class="alert-danger" for="pwd" *ngIf="getPwd().errors!['required']">סיסמא היא שדה חובה</p>
+            </span>
+        </div>
+
+        <button type="submit" class="btn btn-outline-light" [disabled]="!myForm.valid">{{userSer.isLoged? "צא" : "התחבר"}}</button>
+    </form>
+</div>
+
